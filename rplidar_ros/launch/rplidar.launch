@@ -1,0 +1,13 @@
+<launch>
+	<arg name="lidar_type" value="$(env LIDAR_TYPE)" />
+
+	<include file="$(find rplidar_ros)/launch/rplidar_a1.launch" if="$(eval arg('lidar_type') == 'a1')"/>
+
+	<include file="$(find rplidar_ros)/launch/rplidar_a2m12.launch" if="$(eval arg('lidar_type') == 'a2')"/>
+
+	<include file="$(find rplidar_ros)/launch/rplidar_a3.launch" if="$(eval arg('lidar_type') == 'a3')"/>
+
+	<include file="$(find rplidar_ros)/launch/rplidar_s2.launch" if="$(eval arg('lidar_type') == 's2')"/>
+
+	<include file="$(find rplidar_ros)/launch/rplidar_c1.launch" if="$(eval arg('lidar_type') == 'c1')"/>
+</launch>

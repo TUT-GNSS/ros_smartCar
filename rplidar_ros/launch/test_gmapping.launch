@@ -1,0 +1,30 @@
+<launch>
+    <arg name="lidar_type" value="$(env LIDAR_TYPE)" />
+	<!-- <arg name="lidar_type" value="c1" /> -->
+	<arg name="temporalUpdate" default="1.0" if="$(eval arg('lidar_type') == 's2')"/>
+	<arg name="temporalUpdate" default="-1.0" unless="$(eval arg('lidar_type') == 's2')"/>
+	<arg name="scan_topic" default="scan_compress" if="$(eval arg('lidar_type') == 's2')"/>
+	<arg name="scan_topic" default="scan" unless="$(eval arg('lidar_type') == 's2')"/>
+	<arg name="frame_id" default="laser_compress" if="$(eval arg('lidar_type') == 's2')"/>
+	<arg name="frame_id" default="laser" unless="$(eval arg('lidar_type') == 's2')"/>
+
+    <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
+
+    <include file="$(find rf2o_laser_odometry)/launch/rf2o_laser_odometry.launch">
+		<!-- <arg name="scan_topic" value="$(arg scan_topic)" /> -->
+	</include>
+
+	<node pkg="rplidar_ros" type="scan_compression.py" name="scan_compression" if="$(eval arg('lidar_type') == 's2')"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser"
+          args="0 0 1 0 0 3.14  /base_link /$(arg frame_id)  100"/>
+
+    <include file="$(find rplidar_ros)/launch/gmapping.launch">
+		<arg name="scan_topic" value="$(arg scan_topic)" />
+		<arg name="base_frame" value="$(arg frame_id)" />
+		<arg name="temporalUpdate" value="$(arg temporalUpdate)" />
+	</include>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rplidar_ros)/rviz/test_map.rviz" />
+
+</launch>
