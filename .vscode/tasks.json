@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "catkin_make:build",
+			"type": "shell",
+			"command": "catkin_make",
+			"args": [
+				"--directory",
+				"/home/jixi/Desktop/ros/catkin_ws/"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always"
+			},
+			"problemMatcher": "$msCompile"
+		}
+	]
+}

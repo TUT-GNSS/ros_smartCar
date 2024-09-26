@@ -1,0 +1,8 @@
+<launch>
+    <!-- 启动APP相关接口服务 || Start APP related interface services -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+    <node pkg="laserscan_to_point_publish" type="laser_to_point_publish" name="laserscan_to_point_publish"></node>
+    <node pkg="robot_pose_publisher" type="robot_pose_publisher" name="robot_pose_publisher"/>
+    <node pkg="yahboom_app_save_map" type="yahboom_app_save_map.py" name="yahboom_app_save_map"/>
+</launch>
+
