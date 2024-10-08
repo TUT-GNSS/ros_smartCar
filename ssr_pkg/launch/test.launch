@@ -1,5 +1,0 @@
-<launch>
-        <node pkg="ssr_pkg" type ="pub1_node" name="pub1_node"/>
-         <node pkg="ssr_pkg" type ="pub2_node" name="pub2_node" launch-prefix="gnome-terminal -e"/>//使用一个新的终端程序运行这个节点
-        <node pkg="sub1_pkg" type ="sub1_node" name="sub1_node" output="screen"/>//输出到屏幕上
-</launch> 

@@ -19,8 +19,8 @@ class laserWarning:
         self.ros_ctrl = ROSCtrl()
         self.ang_pid = SinglePID(3.0, 0.0, 5.0)
         Server(laserWarningPIDConfig, self.dynamic_reconfigure_callback)
-        self.laserAngle = 70
-        self.ResponseDist = 0.5
+        self.laserAngle = 30
+        self.ResponseDist = 0.1
         self.pub_Buzzer = rospy.Publisher('/Buzzer', Bool, queue_size=1)
         self.sub_laser = rospy.Subscriber('/scan', LaserScan, self.registerScan, queue_size=1)
 
@@ -47,7 +47,8 @@ class laserWarning:
             angle = (scan_data.angle_min + scan_data.angle_increment * i) * RAD2DEG
             # if angle > 90: print "i: {},angle: {},dist: {}".format(i, angle, scan_data.ranges[i])
             # 通过清除不需要的扇区的数据来保留有效的数据
-            if 270 - self.LaserAngle < angle < 270 + self.LaserAngle:
+            if 0 - self.laserAngle < angle < 0 + self.laserAngle:
+                print ("i: {},angle: {},dist: {}".format(i, angle, scan_data.ranges[i]))
                 minDistList.append(ranges[i])
                 minDistIDList.append(angle)
         if len(minDistList) == 0: return

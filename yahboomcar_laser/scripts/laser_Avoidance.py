@@ -22,9 +22,9 @@ class laserAvoid:
         self.front_warning = 0
         self.ros_ctrl = ROSCtrl()
         Server(laserAvoidPIDConfig, self.dynamic_reconfigure_callback)
-        self.linear = 0.5
+        self.linear = 0.2
         self.angular = 1.0
-        self.ResponseDist = 0.55
+        self.ResponseDist = 0.25
         self.LaserAngle = 30  # 10~180
         self.sub_laser = rospy.Subscriber('/scan', LaserScan, self.registerScan, queue_size=1)
 
@@ -54,14 +54,23 @@ class laserAvoid:
         # if we already have a last scan to compare to
         for i in range(len(ranges)):
             angle = (scan_data.angle_min + scan_data.angle_increment * i) * RAD2DEG
+
+            if -self.LaserAngle< angle <self.LaserAngle:
+                if ranges[i] <= self.ResponseDist: self.front_warning += 1
+            if -90 > angle > - self.LaserAngle:
+                if ranges[i] < self.ResponseDist: self.Left_warning += 1
+            if 90 < angle < self.LaserAngle + 90:
+                if ranges[i] < self.ResponseDist: self.Right_warning += 1
+            
+
             # if angle > 90: print "i: {},angle: {},dist: {}".format(i, angle, scan_data.ranges[i])
             # 通过清除不需要的扇区的数据来保留有效的数据
-            if 360 > angle > 360 - self.LaserAngle:
-                if ranges[i] < self.ResponseDist: self.Right_warning += 1
-            if 180 < angle < self.LaserAngle + 180:
-                if ranges[i] < self.ResponseDist: self.Left_warning += 1
-            if 270 - self.LaserAngle < angle < 270 + self.LaserAngle:
-                if ranges[i] <= self.ResponseDist: self.front_warning += 1
+            # if 360 > angle > 360 - self.LaserAngle:
+            #     if ranges[i] < self.ResponseDist: self.Right_warning += 1
+            # if 180 < angle < self.LaserAngle + 180:
+            #     if ranges[i] < self.ResponseDist: self.Left_warning += 1
+            # if 270 - self.LaserAngle < angle < 270 + self.LaserAngle:
+            #     if ranges[i] <= self.ResponseDist: self.front_warning += 1
         # print (self.Left_warning, self.front_warning, self.Right_warning)
         if self.ros_ctrl.Joy_active or self.switch == True:
             if self.Moving == True:
